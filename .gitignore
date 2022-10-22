@@ -1,0 +1,5 @@
+*-backups
+*.kicad_pcb-bak
+.DS_Store
+fp-info-cache
+gerber.zip

@@ -180,20 +180,22 @@ static void report(uint8_t hub,
     key_flip(0x2, 3, alt && bc);      // C
   } else if (mode == MODE_TENKEY) {
     // For JESUS.
+    key_flip(0x0, 0, !alt && ba);  // 0
+    key_flip(0x1, 5, !alt && bb);  // ,
+    key_flip(0x1, 6, !alt && bc);  // .
     key_flip(0x0, 1, !alt && bx);  // 1
     key_flip(0x0, 2, !alt && by);  // 2
     key_flip(0x0, 3, !alt && bz);  // 3
-    key_flip(0x0, 4, !alt && ba);  // 4
-    key_flip(0x0, 5, !alt && bb);  // 5
-    key_flip(0x0, 6, !alt && bc);  // 6
+    key_flip(0x0, 4, alt && ba);   // 4
+    key_flip(0x0, 5, alt && bb);   // 5
+    key_flip(0x0, 6, alt && bc);   // 6
     key_flip(0x0, 7, alt && bx);   // 7
     key_flip(0x1, 0, alt && by);   // 8
     key_flip(0x1, 1, alt && bz);   // 9
-    key_flip(0x0, 0, alt && ba);   // 0
-    key_flip(0x1, 5, alt && bb);   // ,
-    key_flip(0x1, 6, alt && bc);   // .
     key_flip(0x4, 3, u);           // S
     key_flip(0x9, 6, d);           // SPACE
+    key_flip(0x5, 1, l);           // Y
+    key_flip(0x3, 6, r);           // N
   }
 }
 

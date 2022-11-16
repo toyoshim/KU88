@@ -17,7 +17,7 @@ Keyname written inside `()` is used while START is pressed.
 Suitable keymap for ADV games such as JESUS.
 ```
   S       
-  +       1(7)  2(8)  3(9)
- SPC      4(0)  5(,)  6(.)
+Y + N     1(7)  2(8)  3(9)
+ SPC      0(4)  ,(5)  .(6)
 ```
  

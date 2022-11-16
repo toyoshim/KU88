@@ -1,4 +1,4 @@
-// Copyright 2022 Takashi Toyoshima <toyoshim@gmail.com>. All rights reserved.
+// Copyright 2022 Takashi Toyoshima <toyoshim@gmail.com>.
 // Use of this source code is governed by a BSD-style license that can be found
 // in the LICENSE file.
 #include "key.h"
@@ -62,6 +62,12 @@ void key_init() {
   ET0 = 1;   // Timer0 interrupt enable.
   EA = 1;    // Global interrupt enable.
   TR0 = 1;   // Start timer count.
+}
+
+void key_reset() {
+  for (int i = 0; i < 14; ++i)
+    rows[i] = 0xff;
+  rows[14] = 0x7f;
 }
 
 void key_flip(uint8_t row, uint8_t data, bool set) {

@@ -1,4 +1,4 @@
-// Copyright 2022 Takashi Toyoshima <toyoshim@gmail.com>. All rights reserved.
+// Copyright 2022 Takashi Toyoshima <toyoshim@gmail.com>.
 // Use of this source code is governed by a BSD-style license that can be found
 // in the LICENSE file.
 #include <stdint.h>
@@ -8,6 +8,18 @@
 #include "key.h"
 #include "led.h"
 #include "serial.h"
+
+enum {
+  MODE_NORMAL = 0,
+  MODE_TENKEY = 1,
+
+  MODE_WRAP = 2,
+};
+
+uint8_t led_modes[] = {L_ON, L_BLINK};
+
+uint8_t mode = 0;
+bool select = false;
 
 static bool button_check(uint16_t index, const uint8_t* data) {
   if (index == 0xffff)
@@ -126,24 +138,63 @@ static void report(uint8_t hub,
     }
   }
 
+  bool current_select = button_check(info->button[HID_BUTTON_SELECT], data);
+  if (!select && current_select) {
+    key_reset();
+    mode = (mode + 1) % MODE_WRAP;
+    led_mode(led_modes[mode]);
+  }
+  select = current_select;
+  if (select)
+    return;
+
   // MD mini pad
   //                SELECT
   //  +   START   4 1 L1
   //              3 2 R1
-  key_flip(0x0, 7, u && l);                                           // 7
-  key_flip(0x1, 0, u);                                                // 8
-  key_flip(0x1, 1, u && r);                                           // 9
-  key_flip(0x0, 1, d && l);                                           // 1
-  key_flip(0x0, 2, d);                                                // 2
-  key_flip(0x0, 3, d && r);                                           // 3
-  key_flip(0x0, 4, l);                                                // 4
-  key_flip(0x0, 6, r);                                                // 6
-  key_flip(0x1, 7, button_check(info->button[HID_BUTTON_3], data));   // RET
-  key_flip(0x9, 6, button_check(info->button[HID_BUTTON_2], data));   // SPACE
-  key_flip(0x9, 7, button_check(info->button[HID_BUTTON_R1], data));  // ESC
-  key_flip(0x9, 1, button_check(info->button[HID_BUTTON_4], data));   // F1
-  key_flip(0x9, 2, button_check(info->button[HID_BUTTON_1], data));   // F2
-  key_flip(0x9, 3, button_check(info->button[HID_BUTTON_L1], data));  // F3
+  bool alt = button_check(info->button[HID_BUTTON_START], data);
+  bool ba = button_check(info->button[HID_BUTTON_3], data);
+  bool bb = button_check(info->button[HID_BUTTON_2], data);
+  bool bc = button_check(info->button[HID_BUTTON_R1], data);
+  bool bx = button_check(info->button[HID_BUTTON_4], data);
+  bool by = button_check(info->button[HID_BUTTON_1], data);
+  bool bz = button_check(info->button[HID_BUTTON_L1], data);
+  if (mode == MODE_NORMAL) {
+    // For The Legend of Heroes, and Hydlide.
+    key_flip(0x0, 7, u && l);         // 7
+    key_flip(0x1, 0, u && !l && !r);  // 8
+    key_flip(0x1, 1, u && r);         // 9
+    key_flip(0x0, 1, d && l);         // 1
+    key_flip(0x0, 2, d && !l && !r);  // 2
+    key_flip(0x0, 3, d && r);         // 3
+    key_flip(0x0, 4, l && !u && !d);  // 4
+    key_flip(0x0, 6, r && !u && !d);  // 6
+    key_flip(0x1, 7, !alt && ba);     // RET
+    key_flip(0x9, 6, !alt && bb);     // SPACE
+    key_flip(0x9, 7, !alt && bc);     // ESC
+    key_flip(0x9, 1, !alt && bx);     // F1
+    key_flip(0x9, 2, !alt && by);     // F2
+    key_flip(0x9, 3, !alt && bz);     // F3
+    key_flip(0x4, 7, alt && bx);      // W
+    key_flip(0x4, 2, alt && by);      // R
+    key_flip(0x2, 3, alt && bc);      // C
+  } else if (mode == MODE_TENKEY) {
+    // For JESUS.
+    key_flip(0x0, 1, !alt && bx);  // 1
+    key_flip(0x0, 2, !alt && by);  // 2
+    key_flip(0x0, 3, !alt && bz);  // 3
+    key_flip(0x0, 4, !alt && ba);  // 4
+    key_flip(0x0, 5, !alt && bb);  // 5
+    key_flip(0x0, 6, !alt && bc);  // 6
+    key_flip(0x0, 7, alt && bx);   // 7
+    key_flip(0x1, 0, alt && by);   // 8
+    key_flip(0x1, 1, alt && bz);   // 9
+    key_flip(0x0, 0, alt && ba);   // 0
+    key_flip(0x1, 5, alt && bb);   // ,
+    key_flip(0x1, 6, alt && bc);   // .
+    key_flip(0x4, 3, u);           // S
+    key_flip(0x9, 6, d);           // SPACE
+  }
 }
 
 static void detected() {
@@ -158,7 +209,7 @@ void main() {
   initialize();
 
   led_init(1, 4, LOW);
-  led_mode(L_BLINK);
+  led_mode(led_modes[mode]);
 
   key_init();
 
@@ -167,8 +218,6 @@ void main() {
   hid.detected = detected;
   hid.get_flags = get_flags;
   hid_init(&hid);
-
-  Serial.println("hello");
 
   for (;;) {
     led_poll();

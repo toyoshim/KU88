@@ -1,4 +1,4 @@
-// Copyright 2022 Takashi Toyoshima <toyoshim@gmail.com>. All rights reserved.
+// Copyright 2022 Takashi Toyoshima <toyoshim@gmail.com>.
 // Use of this source code is governed by a BSD-style license that can be found
 // in the LICENSE file.
 
@@ -28,8 +28,9 @@ extern void key_int_tmr0() __interrupt INT_NO_TMR0 __using 0;
 //          B | R UP | R DOWN |        |        |      |     |       |
 //          C | F6   | F7     | F8     | F9     | F10  | BS  | INS   | DEL
 //          D | 変換  | 決定   | PC     | 全角    |      |     |       |
-//          E | RET  | RET    | LSHIFT | RSHIFT |      |     |       | ZERO
+//          E | RET  | NUMRET | LSHIFT | RSHIFT |      |     |       | ZERO
 void key_init();
+void key_reset();
 void key_flip(uint8_t row, uint8_t data, bool set);
 void key_flush();
 

@@ -192,10 +192,14 @@ static void report(uint8_t hub,
     key_flip(0x0, 7, alt && bx);   // 7
     key_flip(0x1, 0, alt && by);   // 8
     key_flip(0x1, 1, alt && bz);   // 9
-    key_flip(0x4, 3, u);           // S
-    key_flip(0x9, 6, d);           // SPACE
-    key_flip(0x5, 1, l);           // Y
-    key_flip(0x3, 6, r);           // N
+    key_flip(0x4, 3, !alt && u);   // S
+    key_flip(0x9, 6, !alt && d);   // SPACE
+    key_flip(0x5, 1, !alt && l);   // Y
+    key_flip(0x3, 6, !alt && r);   // N
+    key_flip(0x5, 2, alt && u);    // Z
+    key_flip(0x5, 0, alt && d);    // X
+    key_flip(0x2, 3, alt && l);    // C
+    key_flip(0x4, 6, alt && r);    // V
   }
 }
 

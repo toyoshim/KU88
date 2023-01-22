@@ -161,23 +161,31 @@ static void report(uint8_t hub,
   bool bz = button_check(info->button[HID_BUTTON_L1], data);
   if (mode == MODE_NORMAL) {
     // For The Legend of Heroes, and Hydlide.
-    key_flip(0x0, 7, u && l);         // 7
-    key_flip(0x1, 0, u && !l && !r);  // 8
-    key_flip(0x1, 1, u && r);         // 9
-    key_flip(0x0, 1, d && l);         // 1
-    key_flip(0x0, 2, d && !l && !r);  // 2
-    key_flip(0x0, 3, d && r);         // 3
-    key_flip(0x0, 4, l && !u && !d);  // 4
-    key_flip(0x0, 6, r && !u && !d);  // 6
-    key_flip(0x1, 7, !alt && ba);     // RET
-    key_flip(0x9, 6, !alt && bb);     // SPACE
-    key_flip(0x9, 7, !alt && bc);     // ESC
-    key_flip(0x9, 1, !alt && bx);     // F1
-    key_flip(0x9, 2, !alt && by);     // F2
-    key_flip(0x9, 3, !alt && bz);     // F3
-    key_flip(0x4, 7, alt && bx);      // W
-    key_flip(0x4, 2, alt && by);      // R
-    key_flip(0x2, 3, alt && bc);      // C
+    key_flip(0x0, 7, !alt && u && l);         // 7 (10-Key)
+    key_flip(0x1, 0, !alt && u && !l && !r);  // 8 (10-Key)
+    key_flip(0x1, 1, !alt && u && r);         // 9 (10-Key)
+    key_flip(0x0, 1, !alt && d && l);         // 1 (10-Key)
+    key_flip(0x0, 2, !alt && d && !l && !r);  // 2 (10-Key)
+    key_flip(0x0, 3, !alt && d && r);         // 3 (10-Key)
+    key_flip(0x0, 4, !alt && l && !u && !d);  // 4 (10-Key)
+    key_flip(0x0, 6, !alt && r && !u && !d);  // 6 (10-Key)
+    key_flip(0x6, 7, alt && u && l);          // 7
+    key_flip(0x7, 0, alt && u && !l && !r);   // 8
+    key_flip(0x7, 1, alt && u && r);          // 9
+    key_flip(0x6, 1, alt && d && l);          // 1
+    key_flip(0x6, 2, alt && d && !l && !r);   // 2
+    key_flip(0x6, 3, alt && d && r);          // 3
+    key_flip(0x6, 4, alt && l && !u && !d);   // 4
+    key_flip(0x6, 6, alt && r && !u && !d);   // 6
+    key_flip(0x1, 7, !alt && ba);             // RET
+    key_flip(0x9, 6, !alt && bb);             // SPACE
+    key_flip(0x9, 7, !alt && bc);             // ESC
+    key_flip(0x9, 1, !alt && bx);             // F1
+    key_flip(0x9, 2, !alt && by);             // F2
+    key_flip(0x9, 3, !alt && bz);             // F3
+    key_flip(0x4, 7, alt && bx);              // W
+    key_flip(0x4, 2, alt && by);              // R
+    key_flip(0x2, 3, alt && bc);              // C
   } else if (mode == MODE_TENKEY) {
     // For JESUS.
     key_flip(0x0, 0, !alt && ba);  // 0

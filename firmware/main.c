@@ -19,7 +19,7 @@ enum {
 uint8_t led_modes[] = {L_ON, L_BLINK};
 
 uint8_t mode = 0;
-bool select = false;
+bool start = false;
 
 static bool button_check(uint16_t index, const uint8_t* data) {
   if (index == 0xffff)
@@ -138,21 +138,22 @@ static void report(uint8_t hub,
     }
   }
 
-  bool current_select = button_check(info->button[HID_BUTTON_SELECT], data);
-  if (!select && current_select) {
+  bool current_start = button_check(info->button[HID_BUTTON_START], data);
+  if (!start && current_start) {
     key_reset();
     mode = (mode + 1) % MODE_WRAP;
     led_mode(led_modes[mode]);
   }
-  select = current_select;
-  if (select)
+  start = current_start;
+  if (start) {
     return;
+  }
 
   // MD mini pad
   //                SELECT
   //  +   START   4 1 L1
   //              3 2 R1
-  bool alt = button_check(info->button[HID_BUTTON_START], data);
+  bool alt = button_check(info->button[HID_BUTTON_SELECT], data);
   bool ba = button_check(info->button[HID_BUTTON_3], data);
   bool bb = button_check(info->button[HID_BUTTON_2], data);
   bool bc = button_check(info->button[HID_BUTTON_R1], data);
@@ -179,13 +180,14 @@ static void report(uint8_t hub,
     key_flip(0x6, 6, alt && r && !u && !d);   // 6
     key_flip(0x1, 7, !alt && ba);             // RET
     key_flip(0x9, 6, !alt && bb);             // SPACE
-    key_flip(0x9, 7, !alt && bc);             // ESC
+    key_flip(0x5, 2, !alt && bc);             // Z
     key_flip(0x9, 1, !alt && bx);             // F1
     key_flip(0x9, 2, !alt && by);             // F2
     key_flip(0x9, 3, !alt && bz);             // F3
     key_flip(0x4, 7, alt && bx);              // W
     key_flip(0x4, 2, alt && by);              // R
-    key_flip(0x2, 3, alt && bc);              // C
+    key_flip(0x2, 3, alt && bz);              // C
+    key_flip(0x9, 7, alt && bc);              // ESC
   } else if (mode == MODE_TENKEY) {
     // For JESUS.
     key_flip(0x0, 0, !alt && ba);  // 0

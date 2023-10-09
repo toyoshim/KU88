@@ -1,5 +1,7 @@
 *-backups
 *.kicad_pcb-bak
 .DS_Store
+firmware/build
+firmware/ku88.bin
 fp-info-cache
 gerber.zip
